@@ -4,6 +4,8 @@ namespace KalkulatorApp
 {
     public class Kalkulator
     {
+        int choice = 0;
+
         public int Dodaj(int a, int b)
         {
             return a + b;
