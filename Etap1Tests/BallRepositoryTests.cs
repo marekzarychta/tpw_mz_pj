@@ -1,4 +1,7 @@
-﻿namespace Etap1.Tests
+﻿using Logic;
+using Data;
+
+namespace Etap1.Tests
 {
     [TestClass()]
     public class BallRepositoryTests

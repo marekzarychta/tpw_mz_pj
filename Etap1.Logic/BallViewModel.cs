@@ -1,9 +1,9 @@
-﻿using Etap1;
+﻿using Data;
 using System.Collections.ObjectModel;
 
 // BallViewModel - Warstwa Prezentacji - ViewModel
 
-namespace Etap1
+namespace Logic
 {
     public class BallViewModel
     {

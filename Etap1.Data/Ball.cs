@@ -1,8 +1,7 @@
-﻿using Etap1;
+﻿
+// Ball - Warstwa danych - Model
 
-// Ball - Warstwa logiki - Model
-
-namespace Etap1
+namespace Data
 {
     public class Ball
     {
