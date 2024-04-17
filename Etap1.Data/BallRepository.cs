@@ -1,8 +1,6 @@
-﻿using Etap1;
+﻿// BallRepository - Warstwa Danych - Model
 
-// BallRepository - Warstwa Danych - Model
-
-namespace Etap1
+namespace Data
 {
     public interface IBallRepository
     {

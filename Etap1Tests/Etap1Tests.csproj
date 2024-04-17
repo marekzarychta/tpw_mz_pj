@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Etap1\Etap1.csproj" />
+    <ProjectReference Include="..\Etap1.Data\Etap1.Data.csproj" />
+    <ProjectReference Include="..\Etap1.Logic\Etap1.Logic.csproj" />
+    <ProjectReference Include="..\Etap1\Etap1.Presentation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

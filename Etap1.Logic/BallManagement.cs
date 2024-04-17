@@ -1,8 +1,7 @@
-﻿using Etap1;
-
+﻿using Data;
 // BallManagement - Warstwa logiki - Model
 
-namespace Etap1
+namespace Logic
 {
     public interface IBallManagement
     {

@@ -4,12 +4,14 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-//  BallRepository - Model (Warstwa danych)
-//  Ball, BallManagement - Model (Warstwa logiki) 
+using Logic;
+
+//  BallRepository, Ball - Model (Warstwa danych)
+//  BallManagement - Model (Warstwa logiki) 
 //  BallViewModel, MainWindows.xaml.cs - ViewModel (Warstwa prezentacji)
 //  MainWindow.xaml - View
 
-namespace Etap1
+namespace Presentation
 {
     public partial class MainWindow : Window
     {
