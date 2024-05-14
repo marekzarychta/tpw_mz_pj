@@ -2,7 +2,7 @@
 
 namespace Data
 {
-    public class Data
+    public class Ball
     {
         public float X { get; set; }
         public float Y { get; set; }

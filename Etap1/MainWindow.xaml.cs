@@ -16,29 +16,28 @@ namespace Presentation
 {
     public partial class MainWindow : Window
     {
-        //private DispatcherTimer _timer;
+        private DispatcherTimer _timer;
         private BallViewModel ballViewModel;
 
         public MainWindow()
         {
             InitializeComponent();
             ballViewModel = new BallViewModel(800, 450);
-            //ballViewModel.GameUpdated += BallViewModel_GameUpdated;
-            ballViewModel.PropertyChanged += BallViewModel_PropertyChanged; // Dodaj subskrypcję na zdarzenie PropertyChanged
+            ballViewModel.PropertyChanged += BallViewModel_PropertyChanged;
             DataContext = ballViewModel;
         }
 
         private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            //_timer?.Stop();
+            _timer?.Stop();
             if (int.TryParse(numBallsPicker.Text, out int numBalls))
             {
                 await ballViewModel.StartGameAsync(numBalls);
                 await ballViewModel.UpdateGameAsync();
             }
-/*            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10) };
+            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10) };
             _timer.Tick += GameTimer_Tick;
-            _timer.Start();*/
+            _timer.Start();
         }
 
         private void BallViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
