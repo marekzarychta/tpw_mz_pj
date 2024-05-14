@@ -1,4 +1,6 @@
 ﻿using Data;
+using System.Diagnostics;
+
 // BallManagement - Warstwa logiki - Model
 
 namespace Logic
@@ -7,13 +9,13 @@ namespace Logic
     {
         void MoveBalls();
         void SetBalls(int count);
-        void SetBalls(List<Ball> balls);
-        IEnumerable<Ball> GetBalls();
+        void SetBalls(List<Data.Data> balls);
+        IEnumerable<Data.Data> GetBalls();
         Task HandleCollisionsAsync();
-        Task StartGameAsync(int ballCount, Action<IEnumerable<Ball>> callback);
+        Task StartGameAsync(int ballCount, Action<IEnumerable<Data.Data>> callback);
         Task UpdateGameAsync();
 
-        event EventHandler<IEnumerable<Ball>> GameUpdated;
+        event EventHandler<IEnumerable<Data.Data>> GameUpdated;
     }
 
 
@@ -21,8 +23,8 @@ namespace Logic
     {
 
         private readonly Random random = new Random();
-        private readonly List<Ball> balls = new List<Ball>();
-        public event EventHandler<IEnumerable<Ball>> GameUpdated;
+        private readonly List<Data.Data> balls = new List<Data.Data>();
+        public event EventHandler<IEnumerable<Data.Data>> GameUpdated;
         private readonly object lockObject = new object();
         private readonly Rect gameArea;
 
@@ -31,7 +33,7 @@ namespace Logic
             gameArea = new Rect(gameWidth, gameHeight);
         }
 
-        public async Task StartGameAsync(int ballCount, Action<IEnumerable<Ball>> callback)
+        public async Task StartGameAsync(int ballCount, Action<IEnumerable<Data.Data>> callback)
         {
             SetBalls(ballCount);
             callback?.Invoke(GetBalls());
@@ -40,16 +42,19 @@ namespace Logic
         private void NotifyGameUpdated()
         {
             GameUpdated?.Invoke(this, GetBalls());
+
+            Debug.WriteLine("Notify");
         }
 
         public async Task UpdateGameAsync()
         {
             await HandleCollisionsAsync();
             MoveBalls();
+            Debug.WriteLine("UpdateGame");
             NotifyGameUpdated(); // Wywołanie zdarzenia informującego o aktualizacji stanu gry
         }
 
-        private void CheckCollisionWithWalls(Ball ball)
+        private void CheckCollisionWithWalls(Data.Data ball)
         {
             if (ball.X - ball.Diameter / 2 <= 0 || ball.X + ball.Diameter / 2 >= gameArea.width)
                 ball.Vel_X = -ball.Vel_X;
@@ -85,7 +90,7 @@ namespace Logic
             });
         }
 
-        private bool CheckCollision(Ball ball1, Ball ball2)
+        private bool CheckCollision(Data.Data ball1, Data.Data ball2)
         {
             double dx = ball1.X - ball2.X;
             double dy = ball1.Y - ball2.Y;
@@ -94,7 +99,7 @@ namespace Logic
             return distance < minDistance;
         }
 
-        private void HandleCollision(Ball ball1, Ball ball2)
+        private void HandleCollision(Data.Data ball1, Data.Data ball2)
         {
             float tempVel_X = ball1.Vel_X;
             float tempVel_Y = ball1.Vel_Y;
@@ -129,10 +134,10 @@ namespace Logic
                 balls.Clear();
                 for (int i = 0; i < count; i++)
                 {
-                    Ball newBall;
+                    Data.Data newBall;
                     bool collisionDetected;
                     do{
-                        newBall = new Ball
+                        newBall = new Data.Data
                         {
                             X = random.Next(25, (int)gameArea.width - 25),
                             Y = random.Next(25, (int)gameArea.height - 25),
@@ -151,7 +156,7 @@ namespace Logic
             }
         }
 
-        public void SetBalls(List<Ball> balls)
+        public void SetBalls(List<Data.Data> balls)
         {
             lock (lockObject)
             {
@@ -160,11 +165,11 @@ namespace Logic
             }
         }
 
-        public IEnumerable<Ball> GetBalls()
+        public IEnumerable<Data.Data> GetBalls()
         {
             lock (lockObject)
             {
-                return new List<Ball>(balls);
+                return new List<Data.Data>(balls);
             }
         }
 

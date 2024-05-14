@@ -8,15 +8,15 @@ using System.Windows.Threading;
 using Logic;
 
 //  Ball - Model (Warstwa danych)
-//  BallManagement - Model (Warstwa logiki) 
-//  BallViewModel, MainWindows.xaml.cs - ViewModel (Warstwa prezentacji)
+//  BallViewModel, BallManagement - Model (Warstwa logiki) 
+//  MainWindows.xaml.cs - ViewModel (Warstwa prezentacji)
 //  MainWindow.xaml - View
 
 namespace Presentation
 {
     public partial class MainWindow : Window
     {
-        private DispatcherTimer _timer;
+        //private DispatcherTimer _timer;
         private BallViewModel ballViewModel;
 
         public MainWindow()

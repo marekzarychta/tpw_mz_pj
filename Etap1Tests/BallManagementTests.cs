@@ -34,10 +34,10 @@ namespace Etap1.Tests
         {
             IBallRepository ballRepository = new BallRepository();
             BallManagement ballManagement = new BallManagement(ballRepository, 800, 600);
-            List<Ball> balls = new List<Ball>
+            List<Data.Data> balls = new List<Data.Data>
     {
-        new Ball { X = 100, Y = 100, Vel_X = 2, Vel_Y = 2, Diameter = 20 },
-        new Ball { X = 780, Y = 100, Vel_X = -2, Vel_Y = 2, Diameter = 20 }
+        new Data.Data { X = 100, Y = 100, Vel_X = 2, Vel_Y = 2, Diameter = 20 },
+        new Data.Data { X = 780, Y = 100, Vel_X = -2, Vel_Y = 2, Diameter = 20 }
     };
             ballRepository.SetBalls(balls);
 
