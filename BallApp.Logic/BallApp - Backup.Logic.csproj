@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Etap1.Data\BallApp.Data.csproj" />
+    <ProjectReference Include="..\BallApp.Data\BallApp.Data.csproj" />
+    <ProjectReference Include="..\BallApp.Data\BallApp.Data.csproj" />
   </ItemGroup>
 
 </Project>

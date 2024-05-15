@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace Etap1
+namespace BallApp
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -17,9 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Etap1.Data\BallApp.Data.csproj" />
-    <ProjectReference Include="..\Etap1.Logic\BallApp.Logic.csproj" />
-    <ProjectReference Include="..\Etap1\BallApp.Presentation.csproj" />
+    <ProjectReference Include="..\BallApp.Data\BallApp.Data.csproj" />
+    <ProjectReference Include="..\BallApp.Logic\BallApp.Logic.csproj" />
+    <ProjectReference Include="..\BallApp.Data\BallApp.Data.csproj" />
+    <ProjectReference Include="..\BallApp.Logic\BallApp.Logic.csproj" />
+    <ProjectReference Include="..\BallApp\BallApp.Presentation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,11 +5,11 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BallApp.Presentation", "BallApp.Presentation.csproj", "{75F40918-4E2A-46A6-9440-753FC0FE8D5A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BallApp.Tests", "..\Etap1Tests\BallApp.Tests.csproj", "{C1CEDE1D-1445-4A2E-9F7F-241F90861628}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BallApp.Tests", "..\BallAppTests\BallApp.Tests.csproj", "{C1CEDE1D-1445-4A2E-9F7F-241F90861628}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BallApp.Data", "..\Etap1.Data\BallApp.Data.csproj", "{2CC08199-1535-4A50-8FC7-8696DB968019}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BallApp.Data", "..\BallApp.Data\BallApp.Data.csproj", "{2CC08199-1535-4A50-8FC7-8696DB968019}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BallApp.Logic", "..\Etap1.Logic\BallApp.Logic.csproj", "{8C01522B-655E-4523-B87F-92423B5746FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BallApp.Logic", "..\BallApp.Logic\BallApp.Logic.csproj", "{8C01522B-655E-4523-B87F-92423B5746FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

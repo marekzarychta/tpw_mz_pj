@@ -1,7 +1,7 @@
 ﻿using Logic;
 using Data;
 
-namespace Etap1.Tests
+namespace BallApp.Tests
 {
     [TestClass()]
     public class BallManagementTests
