@@ -1,39 +1,42 @@
 ﻿using Data;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 
-// BallViewModel - Warstwa Prezentacji - ViewModel
+
+// BallViewModel - Warstwa logiki
 
 namespace Logic
 {
-    public class BallViewModel
+    public class BallViewModel : INotifyPropertyChanged
     {
         private readonly IBallManagement ballManagement;
-        private readonly IBallRepository ballRepository;
+
+
         public ObservableCollection<Ball> Balls { get; private set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public BallViewModel(int gameWidth, int gameHeigh)
         {
-            this.ballRepository = new BallRepository();
-            this.ballManagement = new BallManagement(ballRepository, gameWidth, gameHeigh);
-            this.Balls = new ObservableCollection<Ball>();
+
+            ballManagement = new BallManagement(gameWidth, gameHeigh);
+            Balls = new ObservableCollection<Ball>();
         }
 
-        public void StartGame(int ballCount, int gameWidth, int gameHeight)
+        public async Task StartGameAsync(int ballCount)
         {
-            ballRepository.SetBalls(ballCount, gameWidth, gameHeight);
-            UpdateBallsCollection();
+            await ballManagement.StartGameAsync(ballCount, UpdateGame); 
         }
 
-        public void UpdateGame()
+        public async Task UpdateGameAsync()
         {
-            ballManagement.MoveBalls();
-            UpdateBallsCollection();
+            await ballManagement.UpdateGameAsync();
         }
 
-        private void UpdateBallsCollection()
+        private void UpdateGame(IEnumerable<Ball> balls)
         {
             Balls.Clear();
-            foreach (var ball in ballRepository.GetBalls())
+            foreach (var ball in balls)
             {
                 Balls.Add(ball);
             }

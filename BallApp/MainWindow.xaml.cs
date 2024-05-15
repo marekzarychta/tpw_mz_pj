@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -6,9 +7,9 @@ using System.Windows.Threading;
 
 using Logic;
 
-//  BallRepository, Ball - Model (Warstwa danych)
-//  BallManagement - Model (Warstwa logiki) 
-//  BallViewModel, MainWindows.xaml.cs - ViewModel (Warstwa prezentacji)
+//  Ball - Model (Warstwa danych)
+//  BallViewModel, BallManagement - Model (Warstwa logiki) 
+//  MainWindows.xaml.cs - ViewModel (Warstwa prezentacji)
 //  MainWindow.xaml - View
 
 namespace Presentation
@@ -22,24 +23,44 @@ namespace Presentation
         {
             InitializeComponent();
             ballViewModel = new BallViewModel(800, 450);
+            ballViewModel.PropertyChanged += BallViewModel_PropertyChanged;
             DataContext = ballViewModel;
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
             _timer?.Stop();
             if (int.TryParse(numBallsPicker.Text, out int numBalls))
             {
-                ballViewModel.StartGame(numBalls, (int)canvas.ActualWidth, (int)canvas.ActualHeight);
+                await ballViewModel.StartGameAsync(numBalls);
+                await ballViewModel.UpdateGameAsync();
             }
             _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10) };
             _timer.Tick += GameTimer_Tick;
             _timer.Start();
         }
 
-        private void GameTimer_Tick(object sender, EventArgs e)
+        private void BallViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            ballViewModel.UpdateGame();
+            if (e.PropertyName == nameof(BallViewModel.Balls))
+            {
+                DrawBalls();
+            }
+        }
+
+        private void BallViewModel_BallsUpdated(object sender, EventArgs e)
+        {
+            DrawBalls();
+        }
+
+        private void BallViewModel_GameUpdated(object sender, EventArgs e)
+        {
+            DrawBalls(); 
+        }
+
+        private async void GameTimer_Tick(object sender, EventArgs e)
+        {
+            await ballViewModel.UpdateGameAsync();
             DrawBalls();
         }
 

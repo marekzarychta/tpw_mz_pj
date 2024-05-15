@@ -1,11 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Logic;
+﻿using Logic;
 using Data;
 
 namespace Etap1.Tests
@@ -16,8 +9,7 @@ namespace Etap1.Tests
         [TestMethod()]
         public void MoveBallsTest_WithNoBalls()
         {
-            IBallRepository ballRepository = new BallRepository();
-            BallManagement ballManagement = new BallManagement(ballRepository, 800, 600);
+            BallManagement ballManagement = new BallManagement(800, 600);
 
             ballManagement.MoveBalls();
 
@@ -27,9 +19,9 @@ namespace Etap1.Tests
         [TestMethod()]
         public void MoveBallsTest_WithBalls()
         {
-            IBallRepository ballRepository = new BallRepository();
-            BallManagement ballManagement = new BallManagement(ballRepository, 800, 600);
-            ballRepository.SetBalls(5, 800, 600);
+
+            BallManagement ballManagement = new BallManagement(800, 600);
+            ballManagement.SetBalls(5);
 
             ballManagement.MoveBalls();
 
@@ -39,14 +31,13 @@ namespace Etap1.Tests
         [TestMethod()]
         public void MoveBallsTest_WithCollision()
         {
-            IBallRepository ballRepository = new BallRepository();
-            BallManagement ballManagement = new BallManagement(ballRepository, 800, 600);
+            BallManagement ballManagement = new BallManagement(800, 600);
             List<Ball> balls = new List<Ball>
     {
         new Ball { X = 100, Y = 100, Vel_X = 2, Vel_Y = 2, Diameter = 20 },
         new Ball { X = 780, Y = 100, Vel_X = -2, Vel_Y = 2, Diameter = 20 }
     };
-            ballRepository.SetBalls(balls);
+            ballManagement.SetBalls(balls);
 
             // Sprawdzenie, czy piłki znajdują się przed kolizją ze ścianą
             foreach (var ball in balls)
@@ -56,7 +47,7 @@ namespace Etap1.Tests
 
             ballManagement.MoveBalls();
 
-            var updatedBalls = ballRepository.GetBalls();
+            var updatedBalls = ballManagement.GetBalls();
 
             // Sprawdzenie, czy piłki zmieniły prędkość po kolizji ze ścianą
             Assert.IsTrue(updatedBalls.All(b => Math.Abs(b.Vel_X) == 2 && Math.Abs(b.Vel_Y) == 2), "MoveBalls method should change direction of balls after collision with walls.");
