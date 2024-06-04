@@ -1,4 +1,6 @@
 ﻿using Data;
+using System.Numerics;
+
 
 // BallManagement - Warstwa logiki - Model
 
@@ -6,13 +8,10 @@ namespace Logic
 {
     public interface IBallManagement
     {
-        void MoveBalls();
-        void SetBalls(int count);
-        void SetBalls(List<Ball> balls);
         IEnumerable<Ball> GetBalls();
-        Task HandleCollisionsAsync();
         Task StartGameAsync(int ballCount, Action<IEnumerable<Ball>> callback);
         Task UpdateGameAsync();
+        event EventHandler<IEnumerable<Ball>> GameUpdated;
 
     }
 
@@ -25,10 +24,12 @@ namespace Logic
         public event EventHandler<IEnumerable<Ball>> GameUpdated;
         private readonly object lockObject = new object();
         private readonly Rect gameArea;
+        private readonly Logger logger;
 
-        public BallManagement(int gameWidth, int gameHeight)
+        public BallManagement(int gameWidth, int gameHeight, string logFilePath)
         {
             gameArea = new Rect(gameWidth, gameHeight);
+            logger = new Logger(logFilePath);
         }
 
         public async Task StartGameAsync(int ballCount, Action<IEnumerable<Ball>> callback)
@@ -44,9 +45,22 @@ namespace Logic
 
         public async Task UpdateGameAsync()
         {
-            await HandleCollisionsAsync();
             MoveBalls();
+            await HandleCollisionsAsync();
             NotifyGameUpdated();
+        }
+
+        private void LogCollision(Ball ball1, Ball ball2)
+        {
+            var collisionInfo = new
+            {
+                Timestamp = DateTime.Now,
+                Ball1Id = ball1.ID,
+                Ball2Id = ball2.ID,
+                Ball1Position = new { X = ball1.X, Y = ball1.Y },
+                Ball2Position = new { X = ball2.X, Y = ball2.Y }
+            };
+            logger.LogAsync(collisionInfo);
         }
 
         private void CheckCollisionWithWalls(Ball ball)
@@ -96,24 +110,38 @@ namespace Logic
 
         private void HandleCollision(Ball ball1, Ball ball2)
         {
-            float tempVel_X = ball1.Vel_X;
-            float tempVel_Y = ball1.Vel_Y;
-            ball1.Vel_X = ball2.Vel_X;
-            ball1.Vel_Y = ball2.Vel_Y;
-            ball2.Vel_X = tempVel_X;
-            ball2.Vel_Y = tempVel_Y;
+            float dx = ball2.X - ball1.X;
+            float dy = ball2.Y - ball1.Y;
+            float distance = (float)Math.Sqrt(dx * dx + dy * dy);
+
+            float normalX = dx / distance;
+            float normalY = dy / distance;
+
+            float vel1Normal = ball1.Vel_X * normalX + ball1.Vel_Y * normalY;
+            float vel2Normal = ball2.Vel_X * normalX + ball2.Vel_Y * normalY;
+
+            float newVel1Normal = (vel1Normal * (ball1.Weight - ball2.Weight) + 2 * ball2.Weight * vel2Normal) / (ball1.Weight + ball2.Weight);
+            float newVel2Normal = (vel2Normal * (ball2.Weight - ball1.Weight) + 2 * ball1.Weight * vel1Normal) / (ball1.Weight + ball2.Weight);
+
+            ball1.Vel_X += (newVel1Normal - vel1Normal) * normalX;
+            ball1.Vel_Y += (newVel1Normal - vel1Normal) * normalY;
+            ball2.Vel_X += (newVel2Normal - vel2Normal) * normalX;
+            ball2.Vel_Y += (newVel2Normal - vel2Normal) * normalY;
+
+            LogCollision(ball1, ball2);
         }
-        
+
         public void MoveBalls()
         {
+
             lock (lockObject)
             {
-                foreach (var ball in GetBalls())
-                {
-                    ball.X += ball.Vel_X;
-                    ball.Y += ball.Vel_Y;
-                }
-            }
+                 foreach (var ball in GetBalls())
+                 {
+                     ball.X += ball.Vel_X;
+                     ball.Y += ball.Vel_Y;
+                 }
+            };
         }
 
         public void SetBalls(int count)
@@ -130,12 +158,12 @@ namespace Logic
                         {
                             X = random.Next(25, (int)gameArea.width - 25),
                             Y = random.Next(25, (int)gameArea.height - 25),
-                            Weight = (float)(random.NextDouble() * 2 + 0.5),
+                            Weight = (float)(random.NextDouble() * 2 + 1),
                         };
                         float speedMultiplier = 2 / newBall.Weight;
                         newBall.Vel_X = GenRandVel() * speedMultiplier;
                         newBall.Vel_Y = GenRandVel() * speedMultiplier;
-                        newBall.Diameter = newBall.Weight * 20;
+                        newBall.Diameter = newBall.Weight * 25;
 
                         collisionDetected = balls.Any(existingBall => CheckCollision(newBall, existingBall));
                     } while (collisionDetected);
@@ -166,5 +194,8 @@ namespace Logic
         {
             return (float)(random.NextDouble() * 4 - 2);
         }
+
+        
     }
+
 }
