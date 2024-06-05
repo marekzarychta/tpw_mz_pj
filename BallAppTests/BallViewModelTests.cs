@@ -7,7 +7,8 @@ namespace BallApp.Tests
     [TestClass()]
     public class BallViewModelTests
     {
-        String filelog = "..\\..\\..\\..\\testdiagnostic.log";
+        String filelog = "..\\..\\..\\..\\test_diagnostic.log";
+        String collisionsfilelog = "..\\..\\..\\..\\test_collisions_diagnostic.log";
 
         [TestMethod()]
         public void StartGameTest()
@@ -15,7 +16,7 @@ namespace BallApp.Tests
             int ballCount = 5;
             int gameWidth = 800;
             int gameHeight = 600;
-            var ballViewModel = new BallViewModel(gameWidth, gameHeight, filelog);
+            var ballViewModel = new BallViewModel(gameWidth, gameHeight, collisionsfilelog, filelog);
 
             ballViewModel.StartGameAsync(ballCount);
 
@@ -29,7 +30,7 @@ namespace BallApp.Tests
             int ballCount = 5;
             int gameWidth = 800;
             int gameHeight = 600;
-            var ballViewModel = new BallViewModel(gameWidth, gameHeight, filelog);
+            var ballViewModel = new BallViewModel(gameWidth, gameHeight, collisionsfilelog, filelog);
             await ballViewModel.StartGameAsync(ballCount);
 
             await ballViewModel.UpdateGameAsync();
@@ -43,7 +44,7 @@ namespace BallApp.Tests
         public async Task OnPropertyChanged_ShouldInvokePropertyChangedEvent_WhenBallsPropertyChanges()
         {
             // Arrange
-            var ballViewModel = new BallViewModel(800, 600, filelog);
+            var ballViewModel = new BallViewModel(800, 600, collisionsfilelog, filelog);
             bool eventInvoked = false;
             ballViewModel.PropertyChanged += (sender, e) =>
             {
@@ -65,7 +66,7 @@ namespace BallApp.Tests
         public async Task UpdateBalls_ShouldUpdateBallsCollection_WhenCalled()
         {
             // Arrange
-            var ballViewModel = new BallViewModel(800, 600, filelog);
+            var ballViewModel = new BallViewModel(800, 600, collisionsfilelog, filelog);
             var balls = new List<Ball>
             {
                 new Ball { X = 100, Y = 100, Vel_X = 2, Vel_Y = 2, Diameter = 20 },

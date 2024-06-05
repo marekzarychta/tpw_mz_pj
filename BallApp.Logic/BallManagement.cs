@@ -1,6 +1,4 @@
 ﻿using Data;
-using System.Numerics;
-
 
 // BallManagement - Warstwa logiki - Model
 
@@ -9,26 +7,28 @@ namespace Logic
     public interface IBallManagement
     {
         IEnumerable<Ball> GetBalls();
+        void SaveLog();
         Task StartGameAsync(int ballCount, Action<IEnumerable<Ball>> callback);
         Task UpdateGameAsync();
         event EventHandler<IEnumerable<Ball>> GameUpdated;
-
     }
 
 
     public class BallManagement : IBallManagement
     {
-
         private readonly Random random = new Random();
         private readonly List<Ball> balls = new List<Ball>();
         public event EventHandler<IEnumerable<Ball>> GameUpdated;
         private readonly object lockObject = new object();
         private readonly Rect gameArea;
         private readonly Logger logger;
+        private readonly Logger collisionsLogger;
 
-        public BallManagement(int gameWidth, int gameHeight, string logFilePath)
+// Metody
+        public BallManagement(int gameWidth, int gameHeight, string collisionslogFilePath, string logFilePath)
         {
             gameArea = new Rect(gameWidth, gameHeight);
+            collisionsLogger = new Logger(collisionslogFilePath);
             logger = new Logger(logFilePath);
         }
 
@@ -38,16 +38,28 @@ namespace Logic
             callback?.Invoke(GetBalls());
         }
 
-        private void NotifyGameUpdated()
-        {
-            GameUpdated?.Invoke(this, GetBalls());
-        }
-
         public async Task UpdateGameAsync()
         {
-            MoveBalls();
             await HandleCollisionsAsync();
+            MoveBalls();
             NotifyGameUpdated();
+        }
+
+        public void SaveLog()
+        {
+            lock (lockObject)
+            {
+                foreach (var ball in GetBalls())
+                {
+                    var log = new
+                    {
+                        Timestamp = DateTime.Now,
+                        Ball1Id = ball.ID,
+                        Ball1Position = new { X = ball.X, Y = ball.Y },
+                    };
+                    logger.LogAsync(log);
+                }
+            };
         }
 
         private void LogCollision(Ball ball1, Ball ball2)
@@ -60,7 +72,7 @@ namespace Logic
                 Ball1Position = new { X = ball1.X, Y = ball1.Y },
                 Ball2Position = new { X = ball2.X, Y = ball2.Y }
             };
-            logger.LogAsync(collisionInfo);
+            collisionsLogger.LogAsync(collisionInfo);
         }
 
         private void CheckCollisionWithWalls(Ball ball)
@@ -144,6 +156,11 @@ namespace Logic
             };
         }
 
+        private void NotifyGameUpdated()
+        {
+            GameUpdated?.Invoke(this, GetBalls());
+        }
+
         public void SetBalls(int count)
         {
             lock (lockObject)
@@ -156,14 +173,14 @@ namespace Logic
                     do{
                         newBall = new Ball
                         {
-                            X = random.Next(25, (int)gameArea.width - 25),
-                            Y = random.Next(25, (int)gameArea.height - 25),
+                            X = random.Next(30, (int)gameArea.width - 30),
+                            Y = random.Next(30, (int)gameArea.height - 30),
                             Weight = (float)(random.NextDouble() * 2 + 1),
                         };
                         float speedMultiplier = 2 / newBall.Weight;
                         newBall.Vel_X = GenRandVel() * speedMultiplier;
                         newBall.Vel_Y = GenRandVel() * speedMultiplier;
-                        newBall.Diameter = newBall.Weight * 25;
+                        newBall.Diameter = newBall.Weight * 22;
 
                         collisionDetected = balls.Any(existingBall => CheckCollision(newBall, existingBall));
                     } while (collisionDetected);
@@ -194,8 +211,6 @@ namespace Logic
         {
             return (float)(random.NextDouble() * 4 - 2);
         }
-
-        
     }
 
 }

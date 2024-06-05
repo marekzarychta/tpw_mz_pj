@@ -12,16 +12,16 @@ namespace Logic
             _filePath = filePath;
         }
 
-        public async Task LogAsync(object data)
+        public async Task LogAsync(object log)
         {
-            string jsonData = JsonSerializer.Serialize(data);
-            await Task.Run(() =>
+            string jsonData = JsonSerializer.Serialize(log);
+            lock (_lock)
             {
-                lock (_lock)
-                {
-                    File.AppendAllText(_filePath, jsonData + Environment.NewLine);
-                }
-            });
+                File.AppendAllText(_filePath, jsonData + Environment.NewLine);
+            }
         }
+
+
+
     }
 }

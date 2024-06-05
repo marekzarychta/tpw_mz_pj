@@ -14,29 +14,14 @@ namespace Logic
         public event PropertyChangedEventHandler PropertyChanged;
         private CancellationTokenSource cancellationTokenSource;
 
-
-        public BallViewModel(int width, int height, string logFilePath)
+// Metody
+        public BallViewModel(int width, int height, string collisionslogFilePath, string logFilePath)
         {
-            ballManagement = new BallManagement(width, height, logFilePath);
+            ballManagement = new BallManagement(width, height, collisionslogFilePath, logFilePath);
             Balls = new ObservableCollection<Ball>();
             ballManagement.GameUpdated += OnGameUpdated;
         }
-
-        private void OnGameUpdated(object sender, IEnumerable<Ball> e)
-        {
-            UpdateBalls(e);
-            OnPropertyChanged(nameof(Balls));
-        }
-
-        private async void StartUpdatingGame(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await UpdateGameAsync();
-                await Task.Delay(16); // 60 FPS
-            }
-        }
-
+        
         public async Task StartGameAsync(int ballCount)
         {
             cancellationTokenSource?.Cancel();
@@ -45,9 +30,33 @@ namespace Logic
             StartUpdatingGame(cancellationTokenSource.Token);
         }
 
+        private async void StartUpdatingGame(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await UpdateGameAsync();
+                await Task.Delay(12);
+            }
+        }
         public async Task UpdateGameAsync()
         {
             await ballManagement.UpdateGameAsync();
+        }
+
+        public void SaveLog()
+        {
+            ballManagement.SaveLog();
+        }
+
+        private void OnGameUpdated(object sender, IEnumerable<Ball> e)
+        {
+            UpdateBalls(e);
+            OnPropertyChanged(nameof(Balls));
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public void UpdateBalls(IEnumerable<Ball> balls)
@@ -58,11 +67,6 @@ namespace Logic
                 Balls.Add(ball);
             }
             OnPropertyChanged(nameof(Balls));
-        }
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }

@@ -6,15 +6,15 @@ namespace BallApp.Tests
     [TestClass()]
     public class BallManagementTests
     {
-        String filelog = "..\\..\\..\\..\\testdiagnostic.log";
+        String filelog = "..\\..\\..\\..\\test_diagnostic.log";
+        String collisionsfilelog = "..\\..\\..\\..\\test_collisions_diagnostic.log";
+
 
         [TestMethod()]
         public void MoveBallsTest_WithNoBalls()
         {
-            BallManagement ballManagement = new BallManagement(800, 600, filelog);
-
+            BallManagement ballManagement = new BallManagement(800, 600, collisionsfilelog, filelog);
             ballManagement.MoveBalls();
-
             Assert.IsTrue(true, "MoveBalls method should not throw exception when there are no balls.");
         }
 
@@ -22,18 +22,16 @@ namespace BallApp.Tests
         public void MoveBallsTest_WithBalls()
         {
 
-            BallManagement ballManagement = new BallManagement(800, 600, filelog);
+            BallManagement ballManagement = new BallManagement(800, 600, collisionsfilelog, filelog);
             ballManagement.SetBalls(5);
-
             ballManagement.MoveBalls();
-
             Assert.IsTrue(true, "MoveBalls method should move balls without throwing exception.");
         }
 
         [TestMethod()]
         public void MoveBallsTest_WithCollision()
         {
-            BallManagement ballManagement = new BallManagement(800, 600, filelog);
+            BallManagement ballManagement = new BallManagement(800, 600, collisionsfilelog, filelog);
             List<Ball> balls = new List<Ball>
             {
                 new Ball { X = 100, Y = 100, Vel_X = 2, Vel_Y = 2, Diameter = 20 },
@@ -56,7 +54,7 @@ namespace BallApp.Tests
         [TestMethod()]
         public async Task HandleCollisionsAsyncTest()
         {
-            BallManagement ballManagement = new BallManagement(800, 600, filelog);
+            BallManagement ballManagement = new BallManagement(800, 600, collisionsfilelog, filelog);
             List<Ball> balls = new List<Ball>
             {
                 new Ball { X = 100, Y = 100, Vel_X = 2, Vel_Y = 0, Diameter = 20, Weight = 1 },
@@ -74,10 +72,10 @@ namespace BallApp.Tests
         [TestMethod()]
         public async Task LoggerTest()
         {
-            BallManagement ballManagement = new BallManagement(800, 600, filelog);
+            BallManagement ballManagement = new BallManagement(800, 600, collisionsfilelog, filelog);
             ballManagement.SetBalls(5);
-
             ballManagement.MoveBalls();
+            ballManagement.SaveLog();
 
             string logContent;
             lock (ballManagement)
